@@ -1,7 +1,11 @@
 #include <ESP8266WiFi.h>
 #include <EEPROM.h>
 #include "ClickButton.h"
+#include <PubSubClient.h>
 
+WiFiServer server(80);
+ClickButton btn1(btn, LOW, CLICKBTN_PULLUP);
+PubSubClient client(espClient);
 char* ssid = "";
 char* password = "";
 
@@ -12,14 +16,13 @@ int wifi_password_address = 32;
 const char* ssidAp = "ESP8266 Hotspot";
 const char* passwordAp = "password";
 
-WiFiServer server(80);
+
 String selectedSSID;
 String selectedPassword;
 String storedSSID = "";
 String storedPassword = "";
 
 int btn = 0;
-ClickButton btn1(btn, LOW, CLICKBTN_PULLUP);
 int btnFunc = 0;
 
 const int ledPin = LED_BUILTIN;
@@ -27,6 +30,8 @@ int ledState = LOW;
 unsigned long previousMillis = 0;
 long interval;
 int eepromStat;
+
+const char* mqtt_server = "192.168.88.200";
 
 void setup() {
   pinMode(btn, INPUT);
